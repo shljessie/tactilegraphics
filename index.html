@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="dev.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row justify-content-center align-items-center" style="height: 100vh;">
+      <div class="col-md-8">
+        <div class="shadow p-3 mb-5 bg-white rounded" style="height: 70vh;">
+
+          <h2 class="text-center" style="padding: 5%;">Tactile Graphics Image Generator</h2>
+
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text apiDiv" id="basic-addon3">OpenAI API Key</span>
+            </div>
+            <input type="text" id="api" class="apiDiv form-control" aria-describedby="basic-addon3">
+          </div>
+
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-default">Add Image Description</span>
+            </div>
+            <input type="text" id="description" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+          </div>
+
+          <div class="text-center">
+            <button id="generate_button" type="button" class="btn btn-success" style="width: 30%;">Generate</button>
+          </div>
+
+          <div id="image" class="" style="padding-top: 5%;"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+  <script>
+      const url = "https://api.openai.com/v1/images/generations";
+      const text = document.getElementById("description");
+      const image = document.getElementById("image");
+      const btn = document.getElementById("generate_button");
+      const apiDiv = document.getElementsByClassName("apiDiv");
+      const apiInput = document.getElementById("api");
+
+      let apiKey = "";
+
+      function genImage() {
+
+        if (apiKey === "") {
+          apiKey = apiInput.value.trim() || api;
+          if (apiKey === "") {
+            alert("Please enter your OpenAI API key");
+            return;
+          }
+          apiDiv[0].classList.add("hidden");
+          apiDiv[1].classList.add("hidden");
+        }
+
+        if (text.value === "") {
+          alert("Please enter an image description");
+          return;
+        }
+
+        btn.disabled = true;
+        const data = {
+          prompt: text.value,
+        };
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + apiKey,
+          },
+          body: JSON.stringify(data),
+        }).then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            btn.disabled = false;
+
+            data.data.forEach((item) => {
+            const img = document.createElement("img");
+            img.src = item.url;
+            img.alt = "image";
+            img.classList.add(
+              "w-25",
+              "h-25",
+              "rounded-lg",
+              "shadow-lg",
+              "hover:shadow-2xl",
+              "transition",
+              "duration-500",
+              "ease-in-out",
+              "transform",
+              "hover:-translate-y-1",
+              "hover:scale-103"
+            );
+
+            image.appendChild(img);
+
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          btn.disabled = false;
+          alert("Something went wrong. Please try again.");
+        });
+      }
+
+      btn.addEventListener("click", genImage);
+
+  </script>
+</body>
+</html>
