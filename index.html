@@ -13,7 +13,7 @@
   <div class="container">
     <div class="row justify-content-center align-items-center" style="height: 100vh;">
       <div class="col-md-8">
-        <div class="shadow p-3 mb-5 bg-white rounded" style="height: 70vh;">
+        <div class="shadow p-3 mb-5 bg-white rounded" style="height: fit-content;">
 
           <h2 class="text-center" style="padding: 5%;">Tactile Graphics Image Generator </h2>
 
@@ -24,18 +24,54 @@
             <input type="text" id="api" class="apiDiv form-control" aria-describedby="basic-addon3">
           </div>
 
-          <div class="input-group mb-3">
+
+          <!-- Original -->
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="inputGroup-sizing-default">Add Image Description</span>
             </div>
             <input type="text" id="description" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+          </div> -->
+
+          <!-- Main Image Description -->
+          <div class="input-group mb-3">
+            <span class="input-group-text">Main Image Description</span>
+            <input type="text" id="mainDescription" class="form-control">
           </div>
+
+          <!-- Dynamic Items Container -->
+          <div id="itemsContainer">
+            <!-- Item template will be inserted here -->
+          </div>
+
+          <!-- Plus Button to Add More Items -->
+          <div class="text-center">
+            <button id="addItemButton" type="button" class="btn btn-info mb-3">Add Image Elements</button>
+          </div>
+
+          <!-- Overall Composition and Detailed Descriptions -->
+          <div class="input-group mb-3">
+            <span class="input-group-text">Overall Composition</span>
+            <input type="text" id="overallComposition" class="form-control">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">Detailed Descriptions</span>
+            <input type="text" id="detailedDescriptions" class="form-control">
+          </div>
+
+
+
 
           <div class="text-center">
-            <button id="generate_button" type="button" class="btn btn-success" style="width: 30%;">Generate</button>
+            <button id="generate_button" type="button" class="btn btn-success" style="width: 30%;">Generate Image</button>
           </div>
 
-          <div id="image" class="" style="padding-top: 5%;"></div>
+          <div id="image" class="" style="padding: 5%;"></div>
+
+          <div class="text-center">
+            <button id="processImages" class="btn btn-primary" style="width: 30%;">Generate Image Descriptions</button>
+          </div>
+          <div id="results" style="padding: 5%;"></div>
 
         </div>
       </div>
@@ -48,10 +84,34 @@
 
 
   <script>
+
+document.addEventListener("DOMContentLoaded", function() {
+
+      const itemsContainer = document.getElementById("itemsContainer");
+      let itemCount = 0;
+
+      // Function to add a new item input group
+      function addItem() {
+        itemCount++;
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("input-group", "mb-3");
+        itemDiv.innerHTML = `
+          <span class="input-group-text">Item ${itemCount}</span>
+          <input type="text" class="form-control" placeholder="Name" id="itemName${itemCount}">
+          <input type="text" class="form-control" placeholder="Location" id="itemLocation${itemCount}">
+          <input type="text" class="form-control" placeholder="Detail" id="itemDetail${itemCount}">
+        `;
+        itemsContainer.appendChild(itemDiv);
+      }
+
+      // Event listener for the Add Item button
+      document.getElementById("addItemButton").addEventListener("click", addItem);
+
       const url = "https://api.openai.com/v1/images/generations";
-      const text = document.getElementById("description");
+      // const text = document.getElementById("description");
       const image = document.getElementById("image");
-      const btn = document.getElementById("generate_button");
+      const image_gen_btn = document.getElementById("generate_button");
+      const image_desc_btn = document.getElementById("processImages");
       const apiDiv = document.getElementsByClassName("apiDiv");
       const apiInput = document.getElementById("api");
 
@@ -69,14 +129,35 @@
           apiDiv[1].classList.add("hidden");
         }
 
-        if (text.value === "") {
-          alert("Please enter an image description");
-          return;
+        // if (text.value === "") {
+        //   alert("Please enter an image description");
+        //   return;
+        // }
+
+        // Gather input values
+        const mainDescription = document.getElementById("mainDescription").value;
+        const overallComposition = document.getElementById("overallComposition").value;
+        const detailedDescriptions = document.getElementById("detailedDescriptions").value;
+
+        
+
+        // construct prompt
+        let itemsString = "";
+        for (let i = 1; i <= itemCount; i++) {
+          const itemName = document.getElementById(`itemName${i}`).value;
+          const itemLocation = document.getElementById(`itemLocation${i}`).value;
+          const itemDetail = document.getElementById(`itemDetail${i}`).value;
+          itemsString += `The ${itemName} is ${itemLocation} and ${itemDetail}. `;
         }
 
-        btn.disabled = true;
+        // Combine all inputs into a prompt
+        const combinedPrompt = `Create an image of a ${mainDescription}. ${overallComposition}. ${itemsString} ${detailedDescriptions}`;
+
+        console.log(combinedPrompt);
+
+        image_gen_btn.disabled = true;
         const data = {
-          prompt: text.value,
+          prompt: combinedPrompt,
         };
 
         fetch(url, {
@@ -89,7 +170,7 @@
         }).then((res) => res.json())
           .then((data) => {
             console.log(data);
-            btn.disabled = false;
+            image_gen_btn.disabled = false;
 
             data.data.forEach((item) => {
             const img = document.createElement("img");
@@ -115,12 +196,78 @@
         })
         .catch((err) => {
           console.log(err);
-          btn.disabled = false;
+          image_gen_btn.disabled = false;
           alert("Something went wrong. Please try again.");
         });
       }
 
-      btn.addEventListener("click", genImage);
+      image_gen_btn.addEventListener("click", genImage);
+
+      async function genImagDesc() {
+        const customPrompt = `
+            You are describing an image to a Visually Impaired Person. 
+            Generate the given image description according to the following criteria: 
+
+            Original Description: Briefly describe the primary subject or focus of the image.
+
+            Composition of Items in the Image: Describe the placement and arrangement of key elements in the image.
+            Mention the location of these items (e.g., center, top left, right side).
+
+            Overall Theme and Style: Specify the overarching theme or mood of the image (e.g., serene, chaotic, nostalgic).
+            Describe the artistic style (e.g., realistic, abstract, impressionistic).
+
+            Interesting Details: Point out any unique or notable features in the image (e.g., unusual color combinations, distinct textures).
+
+            Detailed Description (Top-Down Approach): Start with the broadest elements and progressively describe finer details.
+            Include descriptions of significant objects, colors, and textures.
+          `;
+
+          apiKey=document.getElementById("api").value;
+
+          const images = document.getElementById('image').getElementsByTagName('img');
+          console.log("Length",images.length)
+          const lastImage = images[images.length - 1].src; 
+
+          console.log('last Image', lastImage);
+
+          payload = {
+              "model": "gpt-4-vision-preview",
+              "messages": [
+                  {
+                      "role": "user",
+                      "content": [
+                          {"type": "text", "text": customPrompt},
+                          {"type": "image_url", "image_url": {"url":lastImage }}
+                      ]
+                  }
+              ],
+              "max_tokens": 300
+          }
+
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${apiKey}`
+              },
+              body: JSON.stringify(payload)
+          });
+          console.log('Response Caption', response)
+          const data = await response.json();
+          const caption = data.choices[0].message.content;
+          console.log('Image Caption', data.choices[0].message.content)
+
+          displayCaption(caption);
+      }
+
+      function displayCaption(caption, fileName) {
+          const resultsDiv = document.getElementById('results');
+          resultsDiv.innerHTML += `<p>${caption}</p>`;
+      }
+
+      image_desc_btn.addEventListener("click", genImagDesc)
+
+ });
 
   </script>
 </body>
