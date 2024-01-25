@@ -34,12 +34,12 @@
 
           <h2 class="text-center" style="padding: 5%;">Tactile Graphics Image Generator </h2>
 
-          <!-- <div class="input-group mb-3">
+          <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text apiDiv" id="basic-addon3">OpenAI API Key</span>
             </div>
             <input type="text" id="api" class="apiDiv form-control" aria-describedby="basic-addon3">
-          </div> -->
+          </div>
 
           <!-- Main Image Description -->
           <div class="input-group mb-3">
@@ -198,8 +198,19 @@ document.addEventListener("DOMContentLoaded", function() {
       const image = document.getElementById("image");
       const image_gen_btn = document.getElementById("generate_button");
       const image_desc_btn = document.getElementById("processImages");
+      const apiDiv = document.getElementsByClassName("apiDiv");
+      const apiInput = document.getElementById("api");
+      const apiKey = '';
 
-      const apiKey = process.env.API_KEY;
+      if (apiKey === "") {
+          apiKey = apiInput.value.trim() || api;
+          if (apiKey === "") {
+            alert("Please enter your OpenAI API key");
+            return;
+          }
+          apiDiv[0].classList.add("hidden");
+          apiDiv[1].classList.add("hidden");
+        }
 
       function genImage() {
 
