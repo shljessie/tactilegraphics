@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="style.css" />
   <!-- Tangle -->
 	<script type="text/javascript" src="Tangle.js"></script>
-
 	<!-- TangleKit (optional) -->
 	<link rel="stylesheet" href="TangleKit/TangleKit.css" type="text/css">
 	<script type="text/javascript" src="TangleKit/mootools.js"></script>
@@ -35,34 +34,26 @@
 
           <h2 class="text-center" style="padding: 5%;">Tactile Graphics Image Generator </h2>
 
-          <div class="input-group mb-3">
+          <!-- <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text apiDiv" id="basic-addon3">OpenAI API Key</span>
             </div>
             <input type="text" id="api" class="apiDiv form-control" aria-describedby="basic-addon3">
-          </div>
-
+          </div> -->
 
           <!-- Main Image Description -->
           <div class="input-group mb-3">
             <span class="input-group-text">Main Image Description</span>
             <input type="text" id="mainDescription" class="form-control">
           </div>
+          <!-- Size -->
+          <class class="input-group mb-3">
+            The image is <input type="text" id="overallComposition" class="form-control"> width
+            and <input type="text" id="overallComposition" class="form-control"> height
+          </class>
+          
 
-          <!-- Testing Interactive Text  -->
-          The size, should be  <span data-var="width" class="TKAdjustableNumber"> width</span> and <span data-var="height" class="TKAdjustableNumber"> height</span>.
-          <br/>
-          Adjust the picture to be <span data-var="darkness" class="TKAdjustableNumber"> darkness</span> and 
-          <span data-var="saturation" class="TKAdjustableNumber"> saturation</span>
-          <br/>
-          <br/>
-
-           <img id="image_graphics" src="./images/example.png">
-
-
-          <!-- Dynamic Items Container -->
           <div id="itemsContainer">
-            <!-- Item template will be inserted here -->
           </div>
 
           <!-- Plus Button to Add More Items -->
@@ -70,11 +61,7 @@
             <button id="addItemButton" type="button" class="btn btn-info mb-3">Add Image Elements</button>
           </div>
 
-          <!-- Overall Composition and Detailed Descriptions -->
-          <div class="input-group mb-3">
-            <span class="input-group-text">Overall Composition</span>
-            <input type="text" id="overallComposition" class="form-control">
-          </div>
+          <!-- Detailed Descriptions -->
           <div class="input-group mb-3">
             <span class="input-group-text">Detailed Descriptions</span>
             <input type="text" id="detailedDescriptions" class="form-control">
@@ -89,10 +76,27 @@
 
           <div id="image" class="" style="padding: 5%;"></div>
 
+          <div id = "final_prompt"></div>
+
           <div class="text-center">
             <button id="processImages" class="btn btn-primary" style="width: 30%;">Generate Image Descriptions</button>
           </div>
           <div id="results" style="padding: 5%;"></div>
+
+
+
+          <h4>Interactive Prompt</h4>
+
+          <!-- Testing Interactive Text  -->
+          The size, should be  <span data-var="width" class="TKAdjustableNumber"> width</span> and <span data-var="height" class="TKAdjustableNumber"> height</span>.
+          <br/>
+          Adjust the picture to be <span data-var="darkness" class="TKAdjustableNumber"> darkness</span> and 
+          <span data-var="saturation" class="TKAdjustableNumber"> saturation</span>
+          <br/>
+          <br/>
+
+            <img id="image_graphics" src="./images/example.png">
+          
 
         </div>
       </div>
@@ -102,60 +106,89 @@
 
   <script>
 
-var tangle = new Tangle(document, {
-    initialize: function () {
-        this.width = 300;   // Initialize default width
-        this.height = 200;  // Initialize default height
-        this.darkness = 50; // Initialize default darkness (0 to 100)
-        this.saturation = 50;// Initialize default saturation (0 to 100)
-    },
-    update: function () {
-        var img = document.getElementById("image_graphics");
-        img.style.width = this.width + "px";
-        img.style.height = this.height + "px";
-        img.style.filter = `brightness(${100 - this.darkness}%) saturate(${this.saturation}%)`;
-    }
-});
+  function setUpTangle () {
 
-  var tangle = new Tangle(document, {
-      initialize: function () { this.width = 1; },
-      update:     function () { this.width = this.width * 2; }
-  });
-    var tangle = new Tangle(document, {
-      initialize: function () { this.height = 1; },
-      update:     function () { this.height = this.height * 2; }
-  });
+        var tangle = new Tangle(document, {
+            initialize: function () {
+                this.width = 300;   // Initialize default width
+                this.height = 200;  // Initialize default height
+                this.darkness = 50; // Initialize default darkness (0 to 100)
+                this.saturation = 50;// Initialize default saturation (0 to 100)
+            },
+            update: function () {
+                var img = document.getElementById("image_graphics");
+                img.style.width = this.width + "px";
+                img.style.height = this.height + "px";
+                img.style.filter = `brightness(${100 - this.darkness}%) saturate(${this.saturation}%)`;
+            }
+        });
 
-  var tangle = new Tangle(document, {
-      initialize: function () { this.darkness = 1; },
-      update:     function () { this.darkness = this.darkness * 2; }
-  });
+        var tangle = new Tangle(document, {
+            initialize: function () { this.width = 1; },
+            update:     function () { this.width = this.width * 2; }
+        });
+          var tangle = new Tangle(document, {
+            initialize: function () { this.height = 1; },
+            update:     function () { this.height = this.height * 2; }
+        });
 
-  var tangle = new Tangle(document, {
-      initialize: function () { this.saturation = 1; },
-      update:     function () { this.saturation = this.saturation * 2; }
-  });
+        var tangle = new Tangle(document, {
+            initialize: function () { this.darkness = 1; },
+            update:     function () { this.darkness = this.darkness * 2; }
+        });
 
+        var tangle = new Tangle(document, {
+            initialize: function () { this.saturation = 1; },
+            update:     function () { this.saturation = this.saturation * 2; }
+        });
+  }
 </script>
 
   <script>
 
 document.addEventListener("DOMContentLoaded", function() {
 
+  require('dotenv').config();
+
+
+  const itemsContainer = document.getElementById("itemsContainer");
+      let itemCount = 0;
 
       // Function to add a new item input group
       function addItem() {
-        itemCount++;
-        const itemDiv = document.createElement("div");
-        itemDiv.classList.add("input-group", "mb-3");
-        itemDiv.innerHTML = `
-          <span class="input-group-text">Item ${itemCount}</span>
-          <input type="text" class="form-control" placeholder="Name" id="itemName${itemCount}">
-          <input type="text" class="form-control" placeholder="Location" id="itemLocation${itemCount}">
-          <input type="text" class="form-control" placeholder="Detail" id="itemDetail${itemCount}">
-        `;
-        itemsContainer.appendChild(itemDiv);
+          itemCount++;
+          const itemDiv = document.createElement("div");
+          itemDiv.classList.add("input-group", "mb-3");
+          itemDiv.innerHTML = `
+              <span class="input-group-text">Item ${itemCount}</span>
+              <input type="text" class="form-control" placeholder="Name" id="itemName${itemCount}">
+
+              <!-- Vertical Location Dropdown -->
+              <select class="form-control" id="vertical-location${itemCount}" name="vertical-location">
+                  <option value="" disabled selected>Vertical</option>
+                  <option value="top">Top</option>
+                  <option value="mid-top">Mid Top</option>
+                  <option value="middle">Middle</option>
+                  <option value="mid-bottom">Mid Bottom</option>
+                  <option value="bottom">Bottom</option>
+              </select>
+
+
+              <!-- Horizontal Location Dropdown -->
+              <select class="form-control" id="horizontal-location${itemCount}" name="horizontal-location">
+                  <option value="" disabled selected>Horizontal</option>
+                  <option value="left">Left</option>
+                  <option value="left-mid">Left Mid</option>
+                  <option value="middle">Middle</option>
+                  <option value="right-mid">Right Mid</option>
+                  <option value="right">Right</option>
+              </select>
+
+              <!-- <input type="text" class="form-control" placeholder="Detail" id="itemDetail${itemCount}">-->
+          `;
+          itemsContainer.appendChild(itemDiv);
       }
+
 
       // Event listener for the Add Item button
       document.getElementById("addItemButton").addEventListener("click", addItem);
@@ -165,47 +198,29 @@ document.addEventListener("DOMContentLoaded", function() {
       const image = document.getElementById("image");
       const image_gen_btn = document.getElementById("generate_button");
       const image_desc_btn = document.getElementById("processImages");
-      const apiDiv = document.getElementsByClassName("apiDiv");
-      const apiInput = document.getElementById("api");
 
-      let apiKey = "";
+      const apiKey = process.env.API_KEY;
 
       function genImage() {
-
-        if (apiKey === "") {
-          apiKey = apiInput.value.trim() || api;
-          if (apiKey === "") {
-            alert("Please enter your OpenAI API key");
-            return;
-          }
-          apiDiv[0].classList.add("hidden");
-          apiDiv[1].classList.add("hidden");
-        }
-
-        // if (text.value === "") {
-        //   alert("Please enter an image description");
-        //   return;
-        // }
 
         // Gather input values
         const mainDescription = document.getElementById("mainDescription").value;
         const overallComposition = document.getElementById("overallComposition").value;
-        const detailedDescriptions = document.getElementById("detailedDescriptions").value;
-
-        
+        const detailedDescriptions = document.getElementById("detailedDescriptions").value;  
 
         // construct prompt
         let itemsString = "";
         for (let i = 1; i <= itemCount; i++) {
           const itemName = document.getElementById(`itemName${i}`).value;
           const itemLocation = document.getElementById(`itemLocation${i}`).value;
-          const itemDetail = document.getElementById(`itemDetail${i}`).value;
-          itemsString += `The ${itemName} is ${itemLocation} and ${itemDetail}. `;
+          // const itemDetail = document.getElementById(`itemDetail${i}`).value;
+          itemsString += `The ${itemName} is ${itemLocation}. `;
         }
 
         // Combine all inputs into a prompt
         const combinedPrompt = `Create an image of a ${mainDescription}. ${overallComposition}. ${itemsString} ${detailedDescriptions}`;
-
+        const final_prompt =document.getElementById(`final_prompt`);
+        final_prompt.innerHTML += `<p><b>Final Prompt: </b>${combinedPrompt}</p>`;
         console.log(combinedPrompt);
 
         image_gen_btn.disabled = true;
