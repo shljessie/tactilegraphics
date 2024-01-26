@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>LFO Effects</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
+  <script src="http://unpkg.com/tone"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
+</head>
+<body>
+
+		<div id="content">
+			<tone-slider label="Panner" id="panner" units="hz" value="4" step="0.5" min="1" max="15"></tone-slider>
+			<tone-play-toggle id="osc0"></tone-play-toggle>
+
+	<script type="text/javascript">
+		// AutoPanner - a panning modulation effect
+		const panner = new Tone.AutoPanner({
+			frequency: 4,
+			depth: 1
+		}).toDestination().start();
+
+		// the input oscillators
+		const pannerOsc = new Tone.Oscillator({ 
+			volume: -12,
+			type: "square6",
+			frequency: "C4"
+		}).connect(panner);
+
+		// bind the interface
+		document.querySelector("#osc0").addEventListener("start", () => pannerOsc.start());
+		document.querySelector("#osc0").addEventListener("stop", () => pannerOsc.stop());
+		document.querySelector("#panner").addEventListener("input", (e) => panner.frequency.value = parseFloat(e.target.value));
+	</script>
+	
+</body>
+</html>
