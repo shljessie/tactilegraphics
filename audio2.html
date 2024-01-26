@@ -12,12 +12,19 @@
   <script src="http://unpkg.com/tone"></script>
 	<script src="./js/tone-ui.js"></script>
 	<script src="./js/components.js"></script>
+
+  <!-- Tangle -->
+	<script type="text/javascript" src="Tangle.js"></script>
+	<!-- TangleKit (optional) -->
 </head>
 <body>
 
 		<div id="content">
 			<tone-slider label="Panner" id="panner" units="hz" value="4" step="0.5" min="1" max="15"></tone-slider>
 			<tone-play-toggle id="osc0"></tone-play-toggle>
+
+      <img id="dynamicImage" src="./images/example.png" style="width: 50%;">
+
 
 	<script type="text/javascript">
 		// AutoPanner - a panning modulation effect
@@ -37,6 +44,19 @@
 		document.querySelector("#osc0").addEventListener("start", () => pannerOsc.start());
 		document.querySelector("#osc0").addEventListener("stop", () => pannerOsc.stop());
 		document.querySelector("#panner").addEventListener("input", (e) => panner.frequency.value = parseFloat(e.target.value));
+
+    document.querySelector("#panner").addEventListener("input", (e) => {
+        const pannerValue = parseFloat(e.target.value);
+        const imageWidth = mapRange(pannerValue, 1, 15, 10, 100); // map from panner range to width range
+        document.querySelector("#dynamicImage").style.width = `${imageWidth}%`;
+        panner.frequency.value = pannerValue;
+    });
+
+    // Helper function to map a range of numbers to another range
+    function mapRange(value, inMin, inMax, outMin, outMax) {
+        return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    }
+
 	</script>
 	
 </body>

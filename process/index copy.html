@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" href="style.css" />
+  <!-- Tonejs -->
+  <script src="http://unpkg.com/tone"></script>
+  <script src="js/tone-ui.js"></script>
+	<script src="js/components.js"></script>
   <!-- Tangle -->
 	<script type="text/javascript" src="Tangle.js"></script>
 	<!-- TangleKit (optional) -->
@@ -40,15 +44,34 @@
             <input type="text" id="api" class="apiDiv form-control" aria-describedby="basic-addon3">
           </div>
 
+          <!-- Main Image Description -->
           <div class="input-group mb-3">
             <span class="input-group-text">Create an Image of</span>
             <input type="text" id="mainDescription" class="form-control">
           </div>
-
+          <!-- Size -->
           <class class="input-group mb-3">
-            The image is <input type="text" id="width" class="form-control" style="width: 30px"> width </input>
-            and <input type="text" id="height" class="form-control"> height </input>
+            The image is <input type="text" id="width" class="form-control"> width
+            and <input type="text" id="height" class="form-control"> height
           </class>
+          
+<!-- 
+          <div id="itemsContainer">
+          </div> -->
+
+          <!-- Plus Button to Add More Items -->
+          <!-- <div class="text-center">
+            <button id="addItemButton" type="button" class="btn btn-info mb-3">Add Image Elements</button>
+          </div> -->
+
+          <!-- Detailed Descriptions -->
+          <!-- <div class="input-group mb-3">
+            <span class="input-group-text">Detailed Descriptions</span>
+            <input type="text" id="detailedDescriptions" class="form-control">
+          </div> -->
+
+
+
 
           <div class="text-center">
             <button id="generate_button" type="button" class="btn btn-success" style="width: 30%;">Generate Image</button>
@@ -63,9 +86,19 @@
           </div>
           <div id="results" style="padding: 5%;"></div>
 
-          <div class="text-center" style="padding-top: 20px;">
-            <button id="go_to_audio2" class="btn btn-info" style="width: 30%;">Go to Audio2</button>
-        </div>
+
+
+          <!-- <h4>Interactive Prompt</h4> -->
+
+          <!-- Testing Interactive Text  -->
+          <!-- The size, should be  <span data-var="width" class="TKAdjustableNumber"> width</span> and <span data-var="height" class="TKAdjustableNumber"> height</span>.
+          <br/>
+          Adjust the picture to be <span data-var="darkness" class="TKAdjustableNumber"> darkness</span> and 
+          <span data-var="saturation" class="TKAdjustableNumber"> saturation</span>
+          <br/>
+          <br/>
+
+            <img id="image_graphics" src="./images/example.png"> -->
           
 
         </div>
@@ -73,12 +106,53 @@
     </div>
   </div>
 
+<!-- 
+  <script>
+
+  function setUpTangle () {
+
+        var tangle = new Tangle(document, {
+            initialize: function () {
+                this.width = 300;   // Initialize default width
+                this.height = 200;  // Initialize default height
+                this.darkness = 50; // Initialize default darkness (0 to 100)
+                this.saturation = 50;// Initialize default saturation (0 to 100)
+            },
+            update: function () {
+                var img = document.getElementById("image_graphics");
+                img.style.width = this.width + "px";
+                img.style.height = this.height + "px";
+                img.style.filter = `brightness(${100 - this.darkness}%) saturate(${this.saturation}%)`;
+            }
+        });
+
+        var tangle = new Tangle(document, {
+            initialize: function () { this.width = 1; },
+            update:     function () { this.width = this.width * 2; }
+        });
+          var tangle = new Tangle(document, {
+            initialize: function () { this.height = 1; },
+            update:     function () { this.height = this.height * 2; }
+        });
+
+        var tangle = new Tangle(document, {
+            initialize: function () { this.darkness = 1; },
+            update:     function () { this.darkness = this.darkness * 2; }
+        });
+
+        var tangle = new Tangle(document, {
+            initialize: function () { this.saturation = 1; },
+            update:     function () { this.saturation = this.saturation * 2; }
+        });
+  }
+</script> -->
+
 <div id="content">
   <tone-slider label="Panner" id="panner" units="hz" value="4" step="0.5" min="1" max="15"></tone-slider>
   <tone-play-toggle id="osc0"></tone-play-toggle>
 
 	<script type="text/javascript">
-
+		// AutoPanner - a panning modulation effect
 		const panner = new Tone.AutoPanner({
 			frequency: 4,
 			depth: 1
@@ -107,7 +181,51 @@
 
 document.addEventListener("DOMContentLoaded", function() {
 
+  // const itemsContainer = document.getElementById("itemsContainer");
+  //     let itemCount = 0;
+
+  //     // Function to add a new item input group
+  //     function addItem() {
+  //         itemCount++;
+  //         const itemDiv = document.createElement("div");
+  //         itemDiv.classList.add("input-group", "mb-3");
+  //         itemDiv.innerHTML = `
+  //             <span class="input-group-text">Item ${itemCount}</span>
+  //             <input type="text" class="form-control" placeholder="Name" id="itemName${itemCount}">
+
+  //             <!-- Vertical Location Dropdown -->
+  //             <select class="form-control" id="vertical-location${itemCount}" name="vertical-location">
+  //                 <option value="" disabled selected>Vertical</option>
+  //                 <option value="top">Top</option>
+  //                 <option value="mid-top">Mid Top</option>
+  //                 <option value="middle">Middle</option>
+  //                 <option value="mid-bottom">Mid Bottom</option>
+  //                 <option value="bottom">Bottom</option>
+  //             </select>
+
+
+  //             <!-- Horizontal Location Dropdown -->
+  //             <select class="form-control" id="horizontal-location${itemCount}" name="horizontal-location">
+  //                 <option value="" disabled selected>Horizontal</option>
+  //                 <option value="left">Left</option>
+  //                 <option value="left-mid">Left Mid</option>
+  //                 <option value="middle">Middle</option>
+  //                 <option value="right-mid">Right Mid</option>
+  //                 <option value="right">Right</option>
+  //             </select>
+
+  //             <!-- <input type="text" class="form-control" placeholder="Detail" id="itemDetail${itemCount}">-->
+  //         `;
+  //         itemsContainer.appendChild(itemDiv);
+  //     }
+
+
+      // Event listener for the Add Item button
+      // document.getElementById("addItemButton").addEventListener("click", addItem);
+
       const url = "https://api.openai.com/v1/images/generations";
+      // const url ="https://api.openai.com/v1/chat/completions"
+      // const text = document.getElementById("description");
       const image = document.getElementById("image");
       const image_gen_btn = document.getElementById("generate_button");
       const image_desc_btn = document.getElementById("processImages");
@@ -124,8 +242,20 @@ document.addEventListener("DOMContentLoaded", function() {
         const mainDescription = document.getElementById("mainDescription").value;
         const width = document.getElementById("width").value;
         const height = document.getElementById("height").value;
-        console.log(width)
-        console.log(height)
+        // const detailedDescriptions = document.getElementById("detailedDescriptions").value;  
+
+        // construct prompt for items
+        // let itemsString = "";
+        // for (let i = 1; i <= itemCount; i++) {
+        //   const itemName = document.getElementById(`itemName${i}`).value;
+        //   const verticalLocation = document.getElementById(`vertical-location${itemCount}`).value;
+        //   const horizontalLocation = document.getElementById(`horizontal-location${itemCount}`).value;
+        //   // const itemDetail = document.getElementById(`itemDetail${i}`).value;
+        //   itemsString += `The ${itemName} is ${verticalLocation} vertically and ${horizontalLocation} horizontally. `;
+        // }
+
+        // Combine all inputs into a prompt
+        // const combinedPrompt = `Create svg code of a ${mainDescription}. ${itemsString} ${detailedDescriptions}`;
         const displayPrompt = `Create an image of a ${mainDescription}. The image is ${width} width and ${height} height`;
         const final_prompt =document.getElementById(`final_prompt`);
         final_prompt.innerHTML = `<p><b>Final Prompt: </b>${displayPrompt}</p>`;
@@ -309,11 +439,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             });
           }
-
-
-      document.getElementById("go_to_audio2").addEventListener("click", function() {
-        window.location.href = 'audio2.html';
-      });
 
  });
 
