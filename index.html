@@ -65,7 +65,11 @@
 
           <div class="text-center" style="padding-top: 20px;">
             <button id="go_to_audio2" class="btn btn-info" style="width: 30%;">Go to Audio2</button>
-        </div>
+          </div>
+
+          <div class="text-center" style="padding-top: 20px;">
+            <button id="code_gen" class="btn btn-info" style="width: 30%;">Image to Code</button>
+          </div>
           
 
         </div>
@@ -313,6 +317,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
       document.getElementById("go_to_audio2").addEventListener("click", function() {
         window.location.href = 'audio2.html';
+      });
+
+
+      document.getElementById("code_gen").addEventListener("click", function() {
+        window.location.href = 'codegen.html';
       });
 
  });
