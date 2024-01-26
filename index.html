@@ -5,7 +5,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <script src="dev.js"></script>
   <link rel="stylesheet" href="style.css" />
   <!-- Tangle -->
 	<script type="text/javascript" src="Tangle.js"></script>
@@ -26,7 +25,7 @@
 </head>
 
 
-<body  onload="setUpTangle();">
+<body>
   <div class="container">
     <div class="row justify-content-center align-items-center" style="height: 100vh;">
       <div class="col-md-8">
@@ -43,29 +42,29 @@
 
           <!-- Main Image Description -->
           <div class="input-group mb-3">
-            <span class="input-group-text">Main Image Description</span>
+            <span class="input-group-text">Create an Image of</span>
             <input type="text" id="mainDescription" class="form-control">
           </div>
           <!-- Size -->
           <class class="input-group mb-3">
-            The image is <input type="text" id="overallComposition" class="form-control"> width
-            and <input type="text" id="overallComposition" class="form-control"> height
+            The image is <input type="text" id="width" class="form-control"> width
+            and <input type="text" id="height" class="form-control"> height
           </class>
           
-
+<!-- 
           <div id="itemsContainer">
-          </div>
+          </div> -->
 
           <!-- Plus Button to Add More Items -->
-          <div class="text-center">
+          <!-- <div class="text-center">
             <button id="addItemButton" type="button" class="btn btn-info mb-3">Add Image Elements</button>
-          </div>
+          </div> -->
 
           <!-- Detailed Descriptions -->
-          <div class="input-group mb-3">
+          <!-- <div class="input-group mb-3">
             <span class="input-group-text">Detailed Descriptions</span>
             <input type="text" id="detailedDescriptions" class="form-control">
-          </div>
+          </div> -->
 
 
 
@@ -85,17 +84,17 @@
 
 
 
-          <h4>Interactive Prompt</h4>
+          <!-- <h4>Interactive Prompt</h4> -->
 
           <!-- Testing Interactive Text  -->
-          The size, should be  <span data-var="width" class="TKAdjustableNumber"> width</span> and <span data-var="height" class="TKAdjustableNumber"> height</span>.
+          <!-- The size, should be  <span data-var="width" class="TKAdjustableNumber"> width</span> and <span data-var="height" class="TKAdjustableNumber"> height</span>.
           <br/>
           Adjust the picture to be <span data-var="darkness" class="TKAdjustableNumber"> darkness</span> and 
           <span data-var="saturation" class="TKAdjustableNumber"> saturation</span>
           <br/>
           <br/>
 
-            <img id="image_graphics" src="./images/example.png">
+            <img id="image_graphics" src="./images/example.png"> -->
           
 
         </div>
@@ -103,7 +102,7 @@
     </div>
   </div>
 
-
+<!-- 
   <script>
 
   function setUpTangle () {
@@ -142,101 +141,104 @@
             update:     function () { this.saturation = this.saturation * 2; }
         });
   }
+</script> -->
+
+
+<script>
+
+
 </script>
 
   <script>
 
 document.addEventListener("DOMContentLoaded", function() {
 
-  require('dotenv').config();
+  // const itemsContainer = document.getElementById("itemsContainer");
+  //     let itemCount = 0;
+
+  //     // Function to add a new item input group
+  //     function addItem() {
+  //         itemCount++;
+  //         const itemDiv = document.createElement("div");
+  //         itemDiv.classList.add("input-group", "mb-3");
+  //         itemDiv.innerHTML = `
+  //             <span class="input-group-text">Item ${itemCount}</span>
+  //             <input type="text" class="form-control" placeholder="Name" id="itemName${itemCount}">
+
+  //             <!-- Vertical Location Dropdown -->
+  //             <select class="form-control" id="vertical-location${itemCount}" name="vertical-location">
+  //                 <option value="" disabled selected>Vertical</option>
+  //                 <option value="top">Top</option>
+  //                 <option value="mid-top">Mid Top</option>
+  //                 <option value="middle">Middle</option>
+  //                 <option value="mid-bottom">Mid Bottom</option>
+  //                 <option value="bottom">Bottom</option>
+  //             </select>
 
 
-  const itemsContainer = document.getElementById("itemsContainer");
-      let itemCount = 0;
+  //             <!-- Horizontal Location Dropdown -->
+  //             <select class="form-control" id="horizontal-location${itemCount}" name="horizontal-location">
+  //                 <option value="" disabled selected>Horizontal</option>
+  //                 <option value="left">Left</option>
+  //                 <option value="left-mid">Left Mid</option>
+  //                 <option value="middle">Middle</option>
+  //                 <option value="right-mid">Right Mid</option>
+  //                 <option value="right">Right</option>
+  //             </select>
 
-      // Function to add a new item input group
-      function addItem() {
-          itemCount++;
-          const itemDiv = document.createElement("div");
-          itemDiv.classList.add("input-group", "mb-3");
-          itemDiv.innerHTML = `
-              <span class="input-group-text">Item ${itemCount}</span>
-              <input type="text" class="form-control" placeholder="Name" id="itemName${itemCount}">
-
-              <!-- Vertical Location Dropdown -->
-              <select class="form-control" id="vertical-location${itemCount}" name="vertical-location">
-                  <option value="" disabled selected>Vertical</option>
-                  <option value="top">Top</option>
-                  <option value="mid-top">Mid Top</option>
-                  <option value="middle">Middle</option>
-                  <option value="mid-bottom">Mid Bottom</option>
-                  <option value="bottom">Bottom</option>
-              </select>
-
-
-              <!-- Horizontal Location Dropdown -->
-              <select class="form-control" id="horizontal-location${itemCount}" name="horizontal-location">
-                  <option value="" disabled selected>Horizontal</option>
-                  <option value="left">Left</option>
-                  <option value="left-mid">Left Mid</option>
-                  <option value="middle">Middle</option>
-                  <option value="right-mid">Right Mid</option>
-                  <option value="right">Right</option>
-              </select>
-
-              <!-- <input type="text" class="form-control" placeholder="Detail" id="itemDetail${itemCount}">-->
-          `;
-          itemsContainer.appendChild(itemDiv);
-      }
+  //             <!-- <input type="text" class="form-control" placeholder="Detail" id="itemDetail${itemCount}">-->
+  //         `;
+  //         itemsContainer.appendChild(itemDiv);
+  //     }
 
 
       // Event listener for the Add Item button
-      document.getElementById("addItemButton").addEventListener("click", addItem);
+      // document.getElementById("addItemButton").addEventListener("click", addItem);
 
       const url = "https://api.openai.com/v1/images/generations";
+      // const url ="https://api.openai.com/v1/chat/completions"
       // const text = document.getElementById("description");
       const image = document.getElementById("image");
       const image_gen_btn = document.getElementById("generate_button");
       const image_desc_btn = document.getElementById("processImages");
       const apiDiv = document.getElementsByClassName("apiDiv");
       const apiInput = document.getElementById("api");
-      const apiKey = '';
 
-      if (apiKey === "") {
-          apiKey = apiInput.value.trim() || api;
-          if (apiKey === "") {
-            alert("Please enter your OpenAI API key");
-            return;
-          }
-          apiDiv[0].classList.add("hidden");
-          apiDiv[1].classList.add("hidden");
-        }
+      apiInput.addEventListener("input", function() {
+        apiKey = apiInput.value.trim();
+      });
 
       function genImage() {
 
         // Gather input values
         const mainDescription = document.getElementById("mainDescription").value;
-        const overallComposition = document.getElementById("overallComposition").value;
-        const detailedDescriptions = document.getElementById("detailedDescriptions").value;  
+        const width = document.getElementById("width").value;
+        const height = document.getElementById("height").value;
+        // const detailedDescriptions = document.getElementById("detailedDescriptions").value;  
 
-        // construct prompt
-        let itemsString = "";
-        for (let i = 1; i <= itemCount; i++) {
-          const itemName = document.getElementById(`itemName${i}`).value;
-          const itemLocation = document.getElementById(`itemLocation${i}`).value;
-          // const itemDetail = document.getElementById(`itemDetail${i}`).value;
-          itemsString += `The ${itemName} is ${itemLocation}. `;
-        }
+        // construct prompt for items
+        // let itemsString = "";
+        // for (let i = 1; i <= itemCount; i++) {
+        //   const itemName = document.getElementById(`itemName${i}`).value;
+        //   const verticalLocation = document.getElementById(`vertical-location${itemCount}`).value;
+        //   const horizontalLocation = document.getElementById(`horizontal-location${itemCount}`).value;
+        //   // const itemDetail = document.getElementById(`itemDetail${i}`).value;
+        //   itemsString += `The ${itemName} is ${verticalLocation} vertically and ${horizontalLocation} horizontally. `;
+        // }
 
         // Combine all inputs into a prompt
-        const combinedPrompt = `Create an image of a ${mainDescription}. ${overallComposition}. ${itemsString} ${detailedDescriptions}`;
+        // const combinedPrompt = `Create svg code of a ${mainDescription}. ${itemsString} ${detailedDescriptions}`;
+        const displayPrompt = `Create an image of a ${mainDescription}. The image is ${width} width and ${height} height`;
         const final_prompt =document.getElementById(`final_prompt`);
-        final_prompt.innerHTML += `<p><b>Final Prompt: </b>${combinedPrompt}</p>`;
-        console.log(combinedPrompt);
+        final_prompt.innerHTML = `<p><b>Final Prompt: </b>${displayPrompt}</p>`;
+
+        final_prompt.addEventListener("input", function() {
+          final_prompt = final_prompt.value.trim();
+        });
 
         image_gen_btn.disabled = true;
         const data = {
-          prompt: combinedPrompt,
+          prompt: displayPrompt,
         };
 
         fetch(url, {
@@ -248,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function() {
           body: JSON.stringify(data),
         }).then((res) => res.json())
           .then((data) => {
-            console.log(data);
+            console.log('Data',data);
             image_gen_btn.disabled = false;
 
             data.data.forEach((item) => {
@@ -256,8 +258,6 @@ document.addEventListener("DOMContentLoaded", function() {
             img.src = item.url;
             img.alt = "image";
             img.classList.add(
-              "w-25",
-              "h-25",
               "rounded-lg",
               "shadow-lg",
               "hover:shadow-2xl",
@@ -270,6 +270,49 @@ document.addEventListener("DOMContentLoaded", function() {
             );
 
             image.appendChild(img);
+
+
+          // Check if the element exists
+        if (final_prompt) {
+
+              let htmlContent = final_prompt.innerHTML;
+
+              // Initialize default values
+              let defaultWidth = 300; // Fallback default width
+              let defaultHeight = 200; // Fallback default height
+
+              // Regular expressions to find numbers in front of "width" and "height"
+              let widthMatch = /(\d+)\s*width/.exec(htmlContent);
+              let heightMatch = /(\d+)\s*height/.exec(htmlContent);
+
+              if (widthMatch && widthMatch[1]) {
+                  defaultWidth = parseInt(widthMatch[1], 10);
+                  htmlContent = htmlContent.replace(widthMatch[0], 'width');
+              }
+
+              if (heightMatch && heightMatch[1]) {
+                  defaultHeight = parseInt(heightMatch[1], 10);
+                  htmlContent = htmlContent.replace(heightMatch[0], 'height');
+              }
+              // Replace only "width" and "height" words with the span tag
+              htmlContent = htmlContent.replace(/width/g, '<span data-var="width" class="TKAdjustableNumber"> width</span>');
+              htmlContent = htmlContent.replace(/height/g, '<span data-var="height" class="TKAdjustableNumber"> height</span>');
+
+              // Update the final prompt div's HTML
+              final_prompt.innerHTML = htmlContent;
+              // Select the last image inside the 'results' div
+              const images = document.getElementById('image').getElementsByTagName('img');
+              const lastImage = images[images.length - 1];
+
+              if (lastImage) {
+                setUpTangle(defaultWidth, defaultHeight);  
+              } else {
+                console.error("No image found in the results div");
+              }
+              } else {
+              console.error("Final prompt element not found");
+              }
+
 
           });
         })
@@ -345,6 +388,39 @@ document.addEventListener("DOMContentLoaded", function() {
       }
 
       image_desc_btn.addEventListener("click", genImagDesc)
+
+
+      function setUpTangle( defaultWidth, defaultHeight) {
+
+          console.log(defaultWidth)
+          console.log(defaultHeight)
+
+            // Set up the Tangle object
+            var tangle = new Tangle(document, {
+                initialize: function () {
+                    this.width = defaultWidth; // Assuming defaultWidth is defined
+                    this.height = defaultHeight; // Assuming defaultHeight is defined
+                    this.darkness = 50;
+                    this.saturation = 50;
+                },
+                update: function () {
+                    // Retrieve the last image in the 'results' div each time the update function runs
+                    // Select the last image inside the 'results' div
+                    const images = document.getElementById('image').getElementsByTagName('img');
+                    const lastImage = images[images.length - 1];
+                    console.log('last Image', lastImage)
+                    // Check if lastImage exists before attempting to modify its style
+                    if (lastImage) {
+                        console.log( lastImage.style.width)
+                        lastImage.style.width = this.width + "px";
+                        lastImage.style.height = this.height + "px";
+                        lastImage.style.filter = `brightness(${100 - this.darkness}%) saturate(${this.saturation}%)`;
+                    } else {
+                        console.error("No image found in the results div");
+                    }
+                }
+            });
+          }
 
  });
 
